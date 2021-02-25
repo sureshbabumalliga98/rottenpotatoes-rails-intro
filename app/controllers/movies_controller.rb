@@ -31,13 +31,12 @@ class MoviesController < ApplicationController
     end
     
     unless session[:ratings]
-      session[:ratings] = Hash[@all_ratings.map{|x| [x, x]}]
+      @ratings_to_show = @all_ratings
+    else
+      @ratings_to_show = session[:ratings].keys
     end
     
     @sort = session[:sort_by]
-    @ratings_to_show = session[:ratings] ? session[:ratings].keys : @all_ratings
-     
-   
     #if params[:ratings]
      # @ratings_to_show = params[:ratings].keys
     #else 
