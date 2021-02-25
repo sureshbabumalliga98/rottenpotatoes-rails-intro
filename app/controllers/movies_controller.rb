@@ -12,6 +12,8 @@ class MoviesController < ApplicationController
     @all_ratings = Movie.movie_ratings
     redirect = 0
     
+    #@ratings_to_show = @all_ratings
+    
     if params[:ratings]
       session[:ratings] = params[:ratings]
       #@ratings_to_show = params[:ratings].keys
@@ -33,7 +35,7 @@ class MoviesController < ApplicationController
     end
     
     @sort = session[:sort_by]
-    @ratings_to_show = session[:ratings].keys
+    @ratings_to_show = session[:ratings] ? session[:ratings].keys : @all_ratings
      
    
     #if params[:ratings]
