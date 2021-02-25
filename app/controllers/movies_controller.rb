@@ -6,22 +6,51 @@ class MoviesController < ApplicationController
     # will render app/views/movies/show.<extension> by default
   end
 
-  def index
+ def index
     
     @movies = Movie.all
     @all_ratings = Movie.movie_ratings
-    @sort = params[:sort_by]
+    redirect = 0
     
     if params[:ratings]
-      @ratings_to_show = params[:ratings].keys
-    else 
-      @ratings_to_show = @all_ratings
+      session[:ratings] = params[:ratings]
+      #@ratings_to_show = params[:ratings].keys
+    elsif session[:ratings]
+      redirect = 1
+      #@ratings_to_show = session[:ratings].keys
     end
     
-    @movies = @movies.where(rating: @ratings_to_show)
-    @movies = @movies.order(@sort)
+    if params[:sort_by]
+      session[:sort_by] = params[:sort_by]
+      #@sort_asc = params[:sort_asc]
+    elsif session[:sort_by]
+      redirect = 1
+      #@sort_asc = session[:sort_asc]
+    end
+    
+    unless session[:ratings]
+      session[:ratings] = Hash[@all_ratings.map{|x| [x, x]}]
+    end
+    
+    @sort = session[:sort_by]
+    @ratings_to_show = session[:ratings].keys
+     
    
-  end
+    #if params[:ratings]
+     # @ratings_to_show = params[:ratings].keys
+    #else 
+     # @ratings_to_show = @all_ratings
+    #end
+    @movies = @movies.order(@sort)
+    @movies = @movies.where(rating: @ratings_to_show)
+    
+    if redirect == 1
+      flash.keep
+      redirect_to movies_path(sort_by: session[:sort_by] , ratings: session[:ratings]) 
+    end
+  
+ end
+
 
   def new
     # default: render 'new' template
