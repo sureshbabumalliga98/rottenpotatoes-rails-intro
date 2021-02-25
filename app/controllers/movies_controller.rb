@@ -10,6 +10,7 @@ class MoviesController < ApplicationController
     
     @movies = Movie.all
     @all_ratings = Movie.movie_ratings
+    @sort = params[:sort_by]
     
     if params[:ratings]
       @ratings_to_show = params[:ratings].keys
@@ -18,7 +19,8 @@ class MoviesController < ApplicationController
     end
     
     @movies = @movies.where(rating: @ratings_to_show)
-    ##redirect_to movies_path(rating: @ratings_to_show)
+    @movies = @movies.order(@sort)
+   
   end
 
   def new
